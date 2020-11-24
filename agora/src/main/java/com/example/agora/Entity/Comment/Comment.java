@@ -1,6 +1,7 @@
 package com.example.agora.Entity.Comment;
 
 import com.example.agora.Entity.Post.Post;
+import com.example.agora.Payload.Request.Post.CommentModifyRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -35,4 +36,15 @@ public class Comment {
     private Date modifyAt;
 
     private int likes;
+
+    public Comment addLikes(){
+        this.likes+=1;
+        return this;
+    }
+
+    public Comment Modify(CommentModifyRequest request){
+        this.contents =  request.getComment();
+        this.modifyAt = new Date();
+        return this;
+    }
 }

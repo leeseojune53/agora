@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService{
                 .map(comment->{
                     if(!user.getUsername().equals(comment.getUserId()))
                         throw new NoAuthorityException();
-                    commentRepository.save(modify(request, comment));
+                    commentRepository.save(comment.Modify(request));
                     return new MessageResponse("댓글 수정 완료");
                 }).orElseThrow(CommentNotFoundException::new);
     }
@@ -52,32 +52,8 @@ public class CommentServiceImpl implements CommentService{
     public MessageResponse commentLike(CmtIdRequest request) {
         return commentRepository.findById(Integer.parseInt(request.getCmtId()))
                 .map(comment->{
-                    commentRepository.save(like(comment));
+                    commentRepository.save(comment.addLikes());
                     return new MessageResponse("성공!");
                 }).orElseThrow(CommentNotFoundException::new);
-    }
-
-    private Comment like(Comment comment){
-        return Comment.builder()
-                .post(comment.getPost())
-                .createAt(comment.getCreateAt())
-                .cmtId(comment.getCmtId())
-                .contents(comment.getContents())
-                .likes(comment.getLikes() + 1)
-                .modifyAt(comment.getModifyAt())
-                .userId(comment.getUserId())
-                .build();
-    }
-
-    private Comment modify(CommentModifyRequest request, Comment comment){
-        return Comment.builder()
-                .userId(comment.getUserId())
-                .modifyAt(new Date())
-                .likes(comment.getLikes())
-                .contents(request.getComment())
-                .cmtId(comment.getCmtId())
-                .createAt(comment.getCreateAt())
-                .post(comment.getPost())
-                .build();
     }
 }

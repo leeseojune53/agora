@@ -33,3 +33,7 @@ application.properties
 
 ### VS Code ###
 .vscode/
+
+agora/src/main/java/com/example/agora/Service/Post/PostServiceImpl.java
+
+agora/src/main/java/com/example/agora/Entity/Post/Post.java

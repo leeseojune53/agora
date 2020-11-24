@@ -67,17 +67,7 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(Integer.parseInt(request.getPostId()))
                 .map(post-> {
                     postRepository.save(
-                            Post.builder()
-                                    .postId(post.getPostId())
-                                    .title(post.getTitle())
-                                    .contents(post.getContents())
-                                    .createAt(post.getCreateAt())
-                                    .modifyAt(post.getModifyAt())
-                                    .likes(post.getLikes())
-                                    .view(post.getView()+1)
-                                    .user(post.getUser())
-                                    .comments(post.getComments())
-                                    .build()
+                            post.addViews()
                     );
                     List<CommentResponse> responseList = new ArrayList<>();
                     for (Comment comment:post.getComments()) {
@@ -108,25 +98,12 @@ public class PostServiceImpl implements PostService {
                             if(!authDetails.getUsername().equals(post.getUser().getUserId())){
                                 throw new NoAuthorityException();
                             }
-                            return modifyPost(request, post);
+                            return post.setModifyAt(request);
                         }).orElseThrow(PostNotFoundException::new)
         );
         return new MessageResponse("글 수정 완료");
     }
 
-    private Post modifyPost(ModifyRequest request, Post post){
-        return Post.builder()
-                .postId(post.getPostId())
-                .title(request.getTitle())
-                .contents(request.getContents())
-                .user(post.getUser())
-                .createAt(post.getCreateAt())
-                .modifyAt(new Date())
-                .likes(post.getLikes())
-                .view(post.getView())
-                .comments(post.getComments())
-                .build();
-    }
 
     @Override
     public MessageResponse delete(PostIdRequest request) {
@@ -148,23 +125,9 @@ public class PostServiceImpl implements PostService {
     public MessageResponse like(PostIdRequest request) {
         return postRepository.findById(Integer.parseInt(request.getPostId()))
                 .map(post->{
-                    postRepository.save(changeLike(post));
+                    postRepository.save(post.addLike());
                     return new MessageResponse("성공!");
                 }).orElseThrow(PostNotFoundException::new);
-    }
-
-    public Post changeLike(Post post){
-        return Post.builder()
-                .postId(post.getPostId())
-                .title(post.getTitle())
-                .contents(post.getContents())
-                .comments(post.getComments())
-                .view(post.getView())
-                .likes(post.getLikes()+1)
-                .createAt(post.getCreateAt())
-                .modifyAt(post.getModifyAt())
-                .user(post.getUser())
-                .build();
     }
 
     public List<SearchData> convertList(List<Post> postList){
