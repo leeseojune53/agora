@@ -1,8 +1,9 @@
 package com.example.agora.Controller.User;
 
 import com.example.agora.Payload.Request.User.LoginRequest;
+import com.example.agora.Payload.Request.User.ReissuanceRequest;
 import com.example.agora.Payload.Request.User.UserRequest;
-import com.example.agora.Payload.Response.User.LoginResponse;
+import com.example.agora.Payload.Response.User.TokenResponse;
 import com.example.agora.Payload.Response.User.MypageResponse;
 import com.example.agora.Service.User.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/auth")
-    public LoginResponse user_login(@RequestBody LoginRequest request){
+    public TokenResponse user_login(@RequestBody LoginRequest request){
         log.info("\nPOST /auth\nuserId : " + request.getUserId() + "\nuserPw : " + request.getUserPw());
         return userService.userLogin(request);
     }
@@ -30,8 +31,14 @@ public class UserController {
 
     @GetMapping("/mypage")
     public MypageResponse myPage(){
-        log.info("\nGet /mypage");
+        log.info("\nGET /mypage");
         return userService.myPage();
+    }
+
+    @PostMapping("/auth/reissuance")
+    public TokenResponse updateToken(@RequestBody ReissuanceRequest request){
+        log.info("\nPOST /auth/reissuance");
+        return userService.updateToken(request);
     }
 
 }

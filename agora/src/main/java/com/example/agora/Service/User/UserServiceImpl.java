@@ -1,18 +1,19 @@
 package com.example.agora.Service.User;
 
 import com.example.agora.Entity.Post.Post;
-import com.example.agora.Entity.RefreshToken.RefreshToken;
-import com.example.agora.Entity.RefreshToken.RefreshTokenRepository;
 import com.example.agora.Entity.User.User;
 import com.example.agora.Entity.User.UserRepository;
 import com.example.agora.Exception.AlreadyExistException;
 import com.example.agora.Exception.InvalidTokenException;
+import com.example.agora.Exception.NoAuthorityException;
 import com.example.agora.Exception.UserNotFoundException;
 import com.example.agora.Payload.Request.User.LoginRequest;
+import com.example.agora.Payload.Request.User.ReissuanceRequest;
 import com.example.agora.Payload.Request.User.UserRequest;
 import com.example.agora.Payload.Response.Post.Search.SearchData;
-import com.example.agora.Payload.Response.User.LoginResponse;
+import com.example.agora.Payload.Response.User.TokenResponse;
 import com.example.agora.Payload.Response.User.MypageResponse;
+import com.example.agora.Redis.RedisUtilService;
 import com.example.agora.Security.AuthorityType;
 import com.example.agora.Security.Jwt.Auth.AuthDetails;
 import com.example.agora.Security.Jwt.JwtTokenProvider;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisUtilService redisUtilService;
 
     @Value("${jwt.exp.refresh}")
     private Long RefreshToken_exp;
@@ -42,8 +43,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public String register(UserRequest request) {
         try{
-            System.out.println(request.getUserId());
-            System.out.println(request.getUserPw());
             userRepository.save(
                     User.builder()
                             .authorityType(AuthorityType.ROLE_USER)
@@ -58,7 +57,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public LoginResponse userLogin(LoginRequest request) {
+    public TokenResponse userLogin(LoginRequest request) {
         return userRepository.findByUserId(request.getUserId())
                 .filter(user-> passwordEncoder.matches(request.getUserPw(), user.getUserPw()))
                 .map(User::getUserCode)
@@ -70,8 +69,10 @@ public class UserServiceImpl implements UserService{
                     }
                     String accessToken = jwtTokenProvider.generateAccessToken(userCode);
                     String refreshToken = jwtTokenProvider.generateRefreshToken(userCode);
-                    refreshTokenRepository.save(new RefreshToken(userCode, refreshToken));
-                    return new LoginResponse(accessToken, refreshToken, RefreshToken_exp);
+                    String key = "user:" + userCode;
+//                    refreshTokenRepository.save(new RefreshToken(userCode, refreshToken));
+                    redisUtilService.setDataExpire(key, refreshToken, RefreshToken_exp);
+                    return new TokenResponse(accessToken, refreshToken, RefreshToken_exp);
                 })
                 .orElseThrow(UserNotFoundException::new);
     }
@@ -82,10 +83,34 @@ public class UserServiceImpl implements UserService{
         List<SearchData> dataList = new ArrayList<>();
         List<Post> postList = User.getPost();
         for(Post post:postList){
-
-            dataList.add(new SearchData(Integer.toString(post.getPostId()), post.getTitle(), post.getUser().getUserId(), post.getCreateAt(), post.getModifyAt()));
+            dataList.add(post.myPage());
         }
 
         return new MypageResponse(User.getUsername(), dataList);
     }
+
+    @Override
+    public TokenResponse updateToken(ReissuanceRequest request) {
+        try{
+            if(jwtTokenProvider.isRefreshToken(request.getRefreshToken())){
+                AuthDetails authDetails = (AuthDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                try{
+                    String key = "user:"  + authDetails.getUser().getUserCode();
+                    if(redisUtilService.getData(key).equals(request.getRefreshToken())){
+                        String accessToken = jwtTokenProvider.generateAccessToken(authDetails.getUser().getUserCode());
+                        String newRefreshToken = jwtTokenProvider.generateRefreshToken(authDetails.getUser().getUserCode());
+                        redisUtilService.setDataExpire(key, newRefreshToken, RefreshToken_exp);
+                        return new TokenResponse(accessToken, newRefreshToken, RefreshToken_exp);
+                    }else throw new InvalidTokenException();
+                }catch(Exception e){
+                    throw new UserNotFoundException();
+                }
+            }else throw new InvalidTokenException();
+        }catch (Exception e){
+            throw new NoAuthorityException();
+        }
+
+    }
+
+
 }

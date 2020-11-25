@@ -3,6 +3,7 @@ package com.example.agora.Entity.Post;
 import com.example.agora.Entity.Comment.Comment;
 import com.example.agora.Entity.User.User;
 import com.example.agora.Payload.Request.Post.ModifyRequest;
+import com.example.agora.Payload.Response.Post.Search.SearchData;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -67,5 +68,9 @@ public class Post {
     public Post addLike(){
         this.likes+=1;
         return this;
+    }
+
+    public SearchData myPage(){
+        return new SearchData(Integer.toString(postId), title, user.getUserId(), createAt, new Date());
     }
 }

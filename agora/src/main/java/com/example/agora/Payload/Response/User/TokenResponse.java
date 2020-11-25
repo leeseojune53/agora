@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @AllArgsConstructor
-public class LoginResponse {
+public class TokenResponse {
     private final String AccessToken;
     private final String RefreshToken;
     private final Long RefreshToken_exp;

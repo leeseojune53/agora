@@ -85,7 +85,7 @@ public class PostController {
 
     @PatchMapping("/comment/like")
     public MessageResponse commentLike(@RequestBody CmtIdRequest request){
-        log.info("Post /post/comment/like\nCmtId : " + request.getCmtId());
+        log.info("POST /post/comment/like\nCmtId : " + request.getCmtId());
         return commentService.commentLike(request);
     }
 
