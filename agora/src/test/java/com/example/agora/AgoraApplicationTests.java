@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.config.location=classpath:application-test.properties"})
 @RunWith(SpringRunner.class)
 @ActiveProfiles(value = {"test"})
 class AgoraApplicationTests {
@@ -52,7 +52,7 @@ class AgoraApplicationTests {
                 .build()
         );
     }
-    
+
 
     @Test
     void test() throws Exception {
