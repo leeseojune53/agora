@@ -5,6 +5,7 @@ import com.example.agora.Entity.User.UserRepository;
 import com.example.agora.Payload.Request.User.UserRequest;
 import com.example.agora.Security.AuthorityType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,7 @@ class AgoraApplicationTests {
                 .build()
         );
     }
+    
 
     @Test
     void test() throws Exception {
