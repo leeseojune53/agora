@@ -57,14 +57,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PreviewResponse preview(PostIdRequest request) {
-        return postRepository.findById(Integer.parseInt(request.getPostId()))
+    public PreviewResponse preview(String postId) {
+        return postRepository.findById(Integer.parseInt(postId))
                 .map(post-> new PreviewResponse(Integer.toString(post.getPostId()), post.getTitle(), post.getUser().getUserId(), post.getCreateAt(), post.getModifyAt())).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
-    public ViewResponse view(PostIdRequest request) {
-        return postRepository.findById(Integer.parseInt(request.getPostId()))
+    public ViewResponse view(String postId) {
+        return postRepository.findById(Integer.parseInt(postId))
                 .map(post-> {
                     postRepository.save(
                             post.addViews()
@@ -78,8 +78,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public SearchResponse search(SearchRequest request) {
-        List<Post> postList = postRepository.findAllByTitleContaining(request.getTitle());
+    public SearchResponse search(String title) {
+        List<Post> postList = postRepository.findAllByTitleContaining(title);
         return new SearchResponse(convertList(postList));
     }
 
@@ -106,9 +106,9 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public MessageResponse delete(PostIdRequest request) {
+    public MessageResponse delete(String postId) {
         AuthDetails authDetails = (AuthDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return postRepository.findById(Integer.parseInt(request.getPostId()))
+        return postRepository.findById(Integer.parseInt(postId))
                 .map(post->{
 
                     if(authDetails.getUsername().equals(post.getUser().getUserId()) || authDetails.getAuthorities().equals(AuthorityType.ROLE_ADMIN)){

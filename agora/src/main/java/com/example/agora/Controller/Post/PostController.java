@@ -28,22 +28,22 @@ public class PostController {
         return postService.write(request);
     }
 
-    @PostMapping("/preview")
-    public PreviewResponse preview(@RequestBody PostIdRequest request){
-        log.info("\nPOST /post/preview\nPostId : " + request.getPostId());
-        return postService.preview(request);
+    @GetMapping("/preview/{postId}")
+    public PreviewResponse preview(@PathVariable("postId") String postId){
+        log.info("\nPOST /post/preview\nPostId : " + postId);
+        return postService.preview(postId);
     }
 
-    @PostMapping("/view")
-    public ViewResponse view(@RequestBody PostIdRequest request){
-        log.info("\nPOST /post/view\nPostId : " + request.getPostId());
-        return postService.view(request);
+    @GetMapping("/view/{postId}")
+    public ViewResponse view(@PathVariable("postId") String postId){
+        log.info("\nPOST /post/view\nPostId : " + postId);
+        return postService.view(postId);
     }
 
-    @PostMapping("/search")
-    public SearchResponse search(@RequestBody SearchRequest request){
-        log.info("\nPOST /post/search\nTitle : " + request.getTitle());
-        return postService.search(request);
+    @GetMapping("/search/{title}")
+    public SearchResponse search(@PathVariable("title") String title){
+        log.info("\nPOST /post/search\nTitle : " + title);
+        return postService.search(title);
     }
 
     @GetMapping("/list")
@@ -64,11 +64,11 @@ public class PostController {
         return commentService.modifyComment(request);
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete/{postId}")
     @Transactional
-    public MessageResponse delete(@RequestBody PostIdRequest request){
-        log.info("\nPOST /post/delete\nPostId : " + request.getPostId());
-        return postService.delete(request);
+    public MessageResponse delete(@PathVariable("postId") String postId){
+        log.info("\nPOST /post/delete\nPostId : " + postId);
+        return postService.delete(postId);
     }
 
     @PostMapping("/comment")

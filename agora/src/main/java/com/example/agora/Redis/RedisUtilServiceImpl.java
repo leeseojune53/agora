@@ -21,10 +21,12 @@ public class RedisUtilServiceImpl implements RedisUtilService{
     }
 
     @Override
-    public void setDataExpire(String key, String value, long duration) {
+    public String setDataExpire(String key, String value, long duration) {
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
         Duration exp = Duration.ofSeconds(duration);
         valueOperations.set(key, value, exp);
-        System.out.println("asdf");
+        return value;
     }
+
+
 }

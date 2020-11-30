@@ -11,11 +11,11 @@ import com.example.agora.Payload.Response.Post.View.ViewResponse;
 
 public interface PostService {
     public MessageResponse write(WriteRequest request);
-    public PreviewResponse preview(PostIdRequest request);
-    public ViewResponse view(PostIdRequest request);
-    public SearchResponse search(SearchRequest request);
+    public PreviewResponse preview(String request);
+    public ViewResponse view(String request);
+    public SearchResponse search(String request);
     public SearchResponse list();
     public MessageResponse modify(ModifyRequest request);
-    public MessageResponse delete(PostIdRequest request);
+    public MessageResponse delete(String request);
     public MessageResponse like(PostIdRequest request);
 }
