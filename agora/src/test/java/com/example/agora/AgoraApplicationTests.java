@@ -1,11 +1,10 @@
 package com.example.agora;
 
-import com.example.agora.Entity.User.User;
-import com.example.agora.Entity.User.UserRepository;
-import com.example.agora.Payload.Request.User.UserRequest;
-import com.example.agora.Security.AuthorityType;
+import com.example.agora.entity.user.User;
+import com.example.agora.entity.user.UserRepository;
+import com.example.agora.payload.request.user.UserRequest;
+import com.example.agora.security.AuthorityType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
