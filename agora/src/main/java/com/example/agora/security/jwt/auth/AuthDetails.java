@@ -1,13 +1,11 @@
-package com.example.agora.Security.Jwt.Auth;
+package com.example.agora.security.jwt.auth;
 
-import com.example.agora.Entity.Comment.Comment;
-import com.example.agora.Entity.Post.Post;
-import com.example.agora.Entity.User.User;
-import com.example.agora.Security.AuthorityType;
+import com.example.agora.entity.post.Post;
+import com.example.agora.entity.user.User;
+import com.example.agora.security.AuthorityType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;

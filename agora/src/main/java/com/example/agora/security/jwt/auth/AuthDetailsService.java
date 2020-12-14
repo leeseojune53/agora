@@ -1,10 +1,8 @@
-package com.example.agora.Security.Jwt.Auth;
+package com.example.agora.security.jwt.auth;
 
-import com.example.agora.Entity.User.UserRepository;
-import com.example.agora.Exception.UserNotFoundException;
-import com.example.agora.Security.AuthorityType;
+import com.example.agora.entity.user.UserRepository;
+import com.example.agora.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
